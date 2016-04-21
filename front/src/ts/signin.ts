@@ -16,15 +16,11 @@ module loadtest.signin {
     errId:String;
   }
   export class SigninController {
-    signinData:ng.resource.IResourceClass<ISigninData>;
-    email:String = "";
-    passwd:String = "";
-    message:String = "";
-    $state:angular.ui.IStateService;
+    protected email:String = "";
+    protected passwd:String = "";
+    protected message:String = "";
 
-    constructor($scope, $state:angular.ui.IStateService, signinData:ng.resource.IResourceClass<ISigninData>) {
-      this.signinData = signinData;
-      this.$state = $state;
+    constructor(protected $scope, protected $window:ng.IWindowService, protected $state:angular.ui.IStateService, protected signinData:ng.resource.IResourceClass<ISigninData>) {
     }
 
     hasMessage():Boolean {
@@ -37,12 +33,18 @@ module loadtest.signin {
       var signin = new this.signinData({email:this.email, passwd:this.passwd});
       var ctrl = this;
       signin.$save(function(saved:ISigninResp, resp){
+//        console.log(saved);
         if(saved.success) {
-          console.log(saved);
           // ログイン状態に遷移
-          ctrl.$state.go('user.dashboard');
+          console.log('login success');
+          // ctrl.$location.path('/my');
+          // ctrl.$scope.$apply();
+          ctrl.$window.location.href = '/my';
+          // console.log(ctrl.$location.url());
         } else {
+          console.log('login failed');
           ctrl.message = saved.msg;
+//          console.debug(saved.msg);
         }
       }, function(e) {
         ctrl.message = "システムエラーが発生しました。時間をおいて再度お試しください。"
@@ -57,4 +59,4 @@ angular.module('perftest.signin').factory('signinData', ['appConfig', '$resource
   }
 ]);
 angular.module('perftest.signin').controller('signinController',
-['$scope', '$state', 'signinData', ($scope, $state, signinData) => new loadtest.signin.SigninController($scope, $state, signinData)]);
+['$scope', '$window', '$state', 'signinData', ($scope, $window, $state, signinData) => new loadtest.signin.SigninController($scope, $window, $state, signinData)]);

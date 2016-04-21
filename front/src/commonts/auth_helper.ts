@@ -1,23 +1,23 @@
 /// <reference path="../../typings/angularjs/angular.d.ts" />
 /// <reference path="../../typings/angularjs/angular-resource.d.ts" />
 /// <reference path="../../typings/angular-ui-router/angular-ui-router.d.ts"/>
-/// <reference path="../../typings/angular-storage/angular-storage.d.ts"/>
+/// <reference path="../../typings/ngstorage/ngstorage.d.ts"/>
 
 module loadtest.authenticate{
   export function AuthRequestManagerFactory(
     $q:angular.IQService,
-    $location:angular.ILocationService,
+    $window:angular.IWindowService,
     appConfig:perftest.conf.AppConfig,
-    $localStorage:angular.a0.storage.IStoreService
+    $localStorage:angular.storage.IStorageService
   ){
-    return new AuthRequestManager($q, $location, appConfig, $localStorage);
+    return new AuthRequestManager($q, $window, appConfig, $localStorage);
   }
   export class AuthRequestManager {
     constructor(
       private $q:angular.IQService,
-      private $location:angular.ILocationService,
+      private $window:angular.IWindowService,
       private appConfig:perftest.conf.AppConfig,
-      private $localStorage:angular.a0.storage.IStoreService
+      private $localStorage:angular.storage.IStorageService
      ) {
     }
     public request = (config:angular.IRequestConfig) => {
@@ -37,7 +37,7 @@ module loadtest.authenticate{
       } else if (response.status == 403 && response.data['errId'] == 'authorization_error') {
         delete this.$localStorage['authToken'];
         console.log('authToken deleted by AuthError.');
-        this.$location.path('/signin');
+        this.$window.location.href = '/';
       }
       return response;
     }
@@ -45,9 +45,22 @@ module loadtest.authenticate{
       if (response.status === 401 || response.status === 403) {
         delete this.$localStorage['authToken'];
         console.log('authToken deleted by ResponseError.');
-        this.$location.path('/signin');
+        this.$window.location.href = '/';
       }
       return this.$q.reject(response);
     }
   }
+  export class AuthFactory {
+    constructor(
+      protected $window:ng.IWindowService,
+      private $localStorage:angular.storage.IStorageService
+    ) {}
+    logout() {
+      this.$localStorage.$reset();
+      this.$window.location.href = '/';
+    }
+  }
 }
+
+angular.module('perftest.auth', ['ngStorage']);
+angular.module('perftest.auth').factory('authFactory', ['$window', '$localStorage',($window, $localStorage) => {return new loadtest.authenticate.AuthFactory($window, $localStorage);}]);

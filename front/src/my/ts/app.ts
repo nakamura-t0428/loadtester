@@ -7,7 +7,10 @@ module loadtest.user.app {
     return new PageConfig($stateProvider, $urlRouterProvider, $httpProvider);
   }
   export class PageConfig {
-    constructor(private $stateProvider:ng.ui.IStateProvider, private $urlRouterProvider:ng.ui.IUrlRouterProvider, private $httpProvider:angular.IHttpProvider){
+    constructor(
+      private $stateProvider:ng.ui.IStateProvider,
+      private $urlRouterProvider:ng.ui.IUrlRouterProvider,
+      private $httpProvider:angular.IHttpProvider){
       // ルーティング設定
       $urlRouterProvider.otherwise("/dashboard");
       $stateProvider
@@ -27,7 +30,7 @@ module loadtest.user.app {
         templateUrl: 'views/dashboard.html',
       })
       ;
-      $httpProvider.interceptors.push(['$q', '$location', 'appConfig', '$localStorage', loadtest.authenticate.AuthRequestManagerFactory]);
+      $httpProvider.interceptors.push(['$q', '$window', 'appConfig', '$localStorage', loadtest.authenticate.AuthRequestManagerFactory]);
     }
   }
 }

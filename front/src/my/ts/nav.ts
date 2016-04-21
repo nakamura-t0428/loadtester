@@ -6,19 +6,21 @@ module loadtest.user.nav {
   import IMyInfoResp = loadtest.myinfo.IMyInfoResp;
 
   export class NavController {
-    $state:angular.ui.IStateService;
-    myInfo:IMyInfoResp;
-
-    constructor($scope, $state:angular.ui.IStateService, myInfoResp:IMyInfoResp) {
-      this.$state = $state;
-      this.myInfo = myInfoResp
+    constructor(
+      protected $scope,
+      protected $window:ng.IWindowService,
+      protected $state:angular.ui.IStateService,
+      protected myInfo:IMyInfoResp,
+      protected authFactory:loadtest.authenticate.AuthFactory) {
     }
 
     logout() {
+      this.authFactory.logout();
+      this.$window.location.href = '/';
       //TODO LOGOUT
     }
   }
 }
-angular.module('perftest.nav', ['perftest.conf', 'loadtest.myinfo']);
+angular.module('perftest.nav', ['perftest.conf', 'perftest.auth', 'loadtest.myinfo']);
 angular.module('perftest.nav').controller('navController',
-['$scope', '$state', 'myInfoResp', ($scope, $state, myInfoResp:loadtest.myinfo.IMyInfoResp) => new loadtest.user.nav.NavController($scope, $state, myInfoResp)]);
+['$scope', '$window', '$state', 'myInfoResp', 'authFactory', ($scope, $window, $state, myInfoResp:loadtest.myinfo.IMyInfoResp, authFactory:loadtest.authenticate.AuthFactory) => new loadtest.user.nav.NavController($scope, $window, $state, myInfoResp, authFactory)]);

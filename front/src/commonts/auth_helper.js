@@ -2,15 +2,15 @@ var loadtest;
 (function (loadtest) {
     var authenticate;
     (function (authenticate) {
-        function AuthRequestManagerFactory($q, $location, appConfig, $localStorage) {
-            return new AuthRequestManager($q, $location, appConfig, $localStorage);
+        function AuthRequestManagerFactory($q, $window, appConfig, $localStorage) {
+            return new AuthRequestManager($q, $window, appConfig, $localStorage);
         }
         authenticate.AuthRequestManagerFactory = AuthRequestManagerFactory;
         var AuthRequestManager = (function () {
-            function AuthRequestManager($q, $location, appConfig, $localStorage) {
+            function AuthRequestManager($q, $window, appConfig, $localStorage) {
                 var _this = this;
                 this.$q = $q;
-                this.$location = $location;
+                this.$window = $window;
                 this.appConfig = appConfig;
                 this.$localStorage = $localStorage;
                 this.request = function (config) {
@@ -31,7 +31,7 @@ var loadtest;
                     else if (response.status == 403 && response.data['errId'] == 'authorization_error') {
                         delete _this.$localStorage['authToken'];
                         console.log('authToken deleted by AuthError.');
-                        _this.$location.path('/signin');
+                        _this.$window.location.href = '/';
                     }
                     return response;
                 };
@@ -39,7 +39,7 @@ var loadtest;
                     if (response.status === 401 || response.status === 403) {
                         delete _this.$localStorage['authToken'];
                         console.log('authToken deleted by ResponseError.');
-                        _this.$location.path('/signin');
+                        _this.$window.location.href = '/';
                     }
                     return _this.$q.reject(response);
                 };
@@ -47,5 +47,19 @@ var loadtest;
             return AuthRequestManager;
         }());
         authenticate.AuthRequestManager = AuthRequestManager;
+        var AuthFactory = (function () {
+            function AuthFactory($window, $localStorage) {
+                this.$window = $window;
+                this.$localStorage = $localStorage;
+            }
+            AuthFactory.prototype.logout = function () {
+                this.$localStorage.$reset();
+                this.$window.location.href = '/';
+            };
+            return AuthFactory;
+        }());
+        authenticate.AuthFactory = AuthFactory;
     })(authenticate = loadtest.authenticate || (loadtest.authenticate = {}));
 })(loadtest || (loadtest = {}));
+angular.module('perftest.auth', ['ngStorage']);
+angular.module('perftest.auth').factory('authFactory', ['$window', '$localStorage', function ($window, $localStorage) { return new loadtest.authenticate.AuthFactory($window, $localStorage); }]);

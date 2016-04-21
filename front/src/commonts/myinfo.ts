@@ -1,7 +1,5 @@
 /// <reference path="../../typings/angularjs/angular.d.ts" />
 /// <reference path="../../typings/angularjs/angular-resource.d.ts" />
-/// <reference path="../../typings/angular-ui-router/angular-ui-router.d.ts"/>
-/// <reference path="../../typings/angular-storage/angular-storage.d.ts"/>
 module loadtest.myinfo {
   export interface IMyInfoResp {
     success:boolean;
