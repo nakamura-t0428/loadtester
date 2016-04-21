@@ -3,14 +3,8 @@
 /// <reference path="../../typings/angular-ui-router/angular-ui-router.d.ts"/>
 
 module loadtest.nav {
-  export interface IMyInfoResp {
-    success:boolean;
-    token:String;
-    email:String;
-    name:String;
-    msg:String;
-    errId:String;
-  }
+  import IMyInfoResp = loadtest.myinfo.IMyInfoResp;
+
   export class NavController {
     $state:angular.ui.IStateService;
     myInfo:IMyInfoResp;
@@ -27,10 +21,5 @@ module loadtest.nav {
 }
 
 angular.module('loadtest.nav', ['ngResource', 'ui.router']);
-angular.module('loadtest.nav').factory('myInfoData', ['appConfig', '$resource',
-  function(appConfig, $resource:ng.resource.IResourceService){
-    var data = $resource( appConfig.apiPref + '/myinfo' );
-    return data;
-  }]);
 angular.module('loadtest.nav').controller('navController',
-['$scope', '$state', 'myInfoResp', ($scope, $state, myInfoResp:loadtest.nav.IMyInfoResp) => new loadtest.nav.NavController($scope, $state, myInfoResp)]);
+['$scope', '$state', 'myInfoResp', ($scope, $state, myInfoResp:loadtest.myinfo.IMyInfoResp) => new loadtest.nav.NavController($scope, $state, myInfoResp)]);

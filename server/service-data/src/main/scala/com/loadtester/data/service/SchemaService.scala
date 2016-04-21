@@ -6,9 +6,11 @@ class SchemaService(val dbm:ServiceDb) {
   import dbm.db
   import dbm.driver.api._
   
-  val schema = dbm.userTbl.schema
+  val tbls = List(dbm.userTbl, dbm.projectTbl, dbm.PrjUserTbl)
+  val schema = tbls.map(_.schema).reduce(_ ++ _)
   
   def createTables = {
-    db.run(schema.drop.asTry.andFinally(schema.create))
+//    db.run(DBIO.sequence(tbls.map(_.schema.drop.asTry)).asTry.andFinally( schema.create ))
+    db.run(schema.drop.asTry.andFinally( schema.create ))
   }
 }

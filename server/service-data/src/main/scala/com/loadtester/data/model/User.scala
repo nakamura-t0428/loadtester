@@ -8,5 +8,6 @@ case class User(
     passHash:String,
     name:String,
     disabled:Boolean,
+    role:Int,
     regDate:Timestamp
     )

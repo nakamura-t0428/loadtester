@@ -26,9 +26,9 @@ gulp.task('tsd', function (callback) {
 });
 
 // TypeScript Task
-gulp.task('ts', ['tsd'], function () {
+gulp.task('landing_ts', ['tsd'], function () {
   // TypeScriptのコンパイル
-  var tsResult = gulp.src(['./src/**/*.ts', '!**/mock/**', '!**/commonjs/**', '!./src/typings'])
+  var tsResult = gulp.src(['./src/commonts/*.ts','./src/ts/*.ts'])
   .pipe(sourcemaps.init())
   // tscpnfig.jsonに書いたコンパイルオプションの取得
   .pipe(ts(tsConfig.compilerOptions))
@@ -42,6 +42,26 @@ gulp.task('ts', ['tsd'], function () {
   // JSファイルをdistに移動
   return tsResult;
 });
+
+// TypeScript Task
+gulp.task('my_ts', ['tsd'], function () {
+  // TypeScriptのコンパイル
+  var tsResult = gulp.src(['./src/commonts/*.ts', './src/my/ts/*.ts'])
+  .pipe(sourcemaps.init())
+  // tscpnfig.jsonに書いたコンパイルオプションの取得
+  .pipe(ts(tsConfig.compilerOptions))
+  .pipe(concat('my/js/loadtest-my.js'))
+  .pipe(uglify())
+  .pipe(sourcemaps.write('maps', {
+    includeContent: true
+  }))
+  .pipe(gulp.dest('./dist'));
+
+  // JSファイルをdistに移動
+  return tsResult;
+});
+
+gulp.task('ts', ['landing_ts', 'my_ts']);
 
 gulp.task('html', function(){
   var result = gulp.src(['./src/**/*.html'])
@@ -93,7 +113,8 @@ gulp.task('connect', function(){
 
 // Watch
 gulp.task('watch', function () {
-    gulp.watch(['./src/**/*.ts', '!**/mock/**', '!**/commonjs/**', '!./src/typings'], ['ts']);
+    gulp.watch(['./src/commonts/*.ts', './src/ts/*.ts'], ['landing_ts']);
+    gulp.watch(['./src/commonts/*.ts', './src/my/ts/*.ts'], ['my_ts']);
     gulp.watch(['./src/**/*.html'], ['html']);
     gulp.watch(['./src/**/*.{png,jpg,gif}', '!./src/commonjs/**/demo/**'], ['image']);
     gulp.watch(['./src/**/*.css', '!**/commonjs/**'], ['css']);

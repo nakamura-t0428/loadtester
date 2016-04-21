@@ -2,6 +2,7 @@ package com.loadtester.data.table
 
 import github.nakamura_t0428.db.Driver
 import com.loadtester.data.model.User
+import com.loadtester.data.model.UserRole
 import java.sql.Timestamp
 
 trait UserT extends Driver {
@@ -12,9 +13,10 @@ trait UserT extends Driver {
     def passHash = column[String]("PASS_HASH", O.SqlType("CHAR(64)"))
     def name = column[String]("NAME", O.SqlType("VARCHAR(64)"))
     def disabled = column[Boolean]("DISABLED", O.Default(false))
+    def role = column[Int]("ROLE", O.Default(UserRole.default))
     def regDate = column[Timestamp]("REGDATE", O.SqlType("DATETIME"))
     
-    def * = (userId, email, passHash, name, disabled, regDate) <> (User.tupled, User.unapply)
+    def * = (userId, email, passHash, name, disabled, role, regDate) <> (User.tupled, User.unapply)
   }
   
   val userTbl = TableQuery[Users]

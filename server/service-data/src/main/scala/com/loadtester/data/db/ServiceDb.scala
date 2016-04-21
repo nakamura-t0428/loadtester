@@ -5,6 +5,6 @@ import com.loadtester.data.table._
 
 class ServiceDb(runMode:String = DbBase.envRunMode)
 extends DbBase("/loadtest-db", runMode)
-with UserT {
-  
-}
+with UserT
+with ProjectT
+with ProjectUserT
