@@ -59,12 +59,15 @@
     </dependency>
     <dependency>
       <groupId>io.spray</groupId>
+      <artifactId>spray-client_${scala.version.major}</artifactId>
+      <version>${spray.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.spray</groupId>
       <artifactId>spray-json_${scala.version.major}</artifactId>
       <version>1.3.2</version>
     </dependency>
     
-    
-    <!-- JWT(Json Web Token) -->
     <dependency>
       <groupId>net.debasishg</groupId>
       <artifactId>redisclient_${scala.version.major}</artifactId>
