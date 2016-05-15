@@ -18,6 +18,6 @@ object Boot extends App {
 
   implicit val timeout = Timeout(30.seconds)
   // start a new HTTP server on port 8080 with our service actor as the handler
-  IO(Http) ? Http.Bind(proxies, interface = "localhost", port = 8101)
-  IO(Http) ? Http.Bind(service, interface = "localhost", port = 8090)
+  IO(Http) ! Http.Bind(proxies, interface = "localhost", port = 8101)
+  IO(Http) ! Http.Bind(service, interface = "localhost", port = 8090)
 }
