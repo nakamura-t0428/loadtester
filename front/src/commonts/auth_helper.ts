@@ -62,5 +62,5 @@ module loadtest.authenticate{
   }
 }
 
-angular.module('perftest.auth', ['ngStorage']);
+angular.module('perftest.auth', ['ngStorage', 'perftest.conf']);
 angular.module('perftest.auth').factory('authFactory', ['$window', '$localStorage',($window, $localStorage) => {return new loadtest.authenticate.AuthFactory($window, $localStorage);}]);

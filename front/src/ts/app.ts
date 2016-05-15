@@ -1,44 +1,23 @@
-/// <reference path="../../typings/angularjs/angular.d.ts" />
-/// <reference path="../../typings/angular-ui-router/angular-ui-router.d.ts" />
-/// <reference path="../commonts/auth_helper.ts" />
-
-module shift.perftest.page {
-  class StateBase {
-
+angular.module('perftest.app', ['ngResource', 'ngStorage', 'ngAnimate', 'ui.router', 'angular-loading-bar', 'perftest.conf', 'perftest.auth']);
+angular.module('perftest.app').config(['$stateProvider', '$urlRouterProvider', '$httpProvider', 'myInfoData',($stateProvider, $urlRouterProvider, $httpProvider, myInfoData) => new shift.perftest.page.PageConfig($stateProvider, $urlRouterProvider, $httpProvider, myInfoData)]);
+angular.module('perftest.app').factory('invitationEntry', ['appConfig', '$resource', function (appConfig, $resource) {
+  return $resource( appConfig.apiPref + '/invite');
+}]);
+angular.module('perftest.app').controller('invitationController',
+['$scope', '$state', 'invitationEntry', ($scope, $state, invitationEntry) => new loadtest.invitation.InvitationController($scope, $state, invitationEntry)]);
+angular.module('perftest.app').controller('navController',
+['$scope', '$window', '$state', 'myInfoResp', 'authFactory', ($scope, $window, $state, myInfoResp:loadtest.myinfo.IMyInfoResp, authFactory:loadtest.authenticate.AuthFactory) => new loadtest.user.nav.NavController($scope, $window, $state, myInfoResp, authFactory)]);
+angular.module('perftest.app').factory('signinData', ['appConfig', '$resource',
+  function (appConfig, $resource) {
+      return $resource( appConfig.apiPref + '/authenticate');
   }
-  export class PageConfig {
-    constructor(
-      private $stateProvider:ng.ui.IStateProvider,
-      private $urlRouterProvider:ng.ui.IUrlRouterProvider,
-      private $httpProvider:angular.IHttpProvider){
-      // ルーティング設定
-      $urlRouterProvider.otherwise("/signin");
-      $stateProvider
-      .state('signin', {
-        url: '/signin',
-        templateUrl: 'views/signin.html',
-        controller: 'signinController',
-        controllerAs: 'signinCtrl'
-      })
-      .state('invite', {
-        url: '/invite',
-        templateUrl: 'views/invite.html',
-        controller: 'invitationController',
-        controllerAs: 'inviteCtrl'
-      })
-      .state('signup', {
-        url: '/signup/:token',
-        templateUrl: 'views/signup.html',
-        controller: 'signupController',
-        controllerAs: 'signupCtrl'
-      })
-      ;
-      $httpProvider.interceptors.push(['$q', '$location', 'appConfig', '$localStorage', loadtest.authenticate.AuthRequestManagerFactory]);
-    }
-  }
-}
-
-angular.module('perftest.app', ['ngStorage', 'ngAnimate', 'ui.router', 'angular-loading-bar', 'perftest.conf', 'loadtest.myinfo', 'perftest.invite', 'perftest.signup', 'perftest.signin'
-//, 'perftest.rest' // FOR DEVELOPMENT
 ]);
-angular.module('perftest.app').config(['$stateProvider', '$urlRouterProvider', '$httpProvider',($stateProvider, $urlRouterProvider, $httpProvider) => new shift.perftest.page.PageConfig($stateProvider, $urlRouterProvider, $httpProvider)]);
+angular.module('perftest.app').controller('signinController',
+['$scope', '$window', '$state', 'signinData', ($scope, $window, $state, signinData) => new loadtest.signin.SigninController($scope, $window, $state, signinData)]);
+angular.module('perftest.app').factory('signupEntry', ['appConfig', '$resource',
+function(appConfig, $resource:ng.resource.IResourceService){
+  return $resource( appConfig.apiPref + '/register' );
+}]);
+angular.module('perftest.app').controller('signupController',
+['$scope', '$state', '$stateParams', 'signupEntry', ($scope, $state, $stateParams, signupEntry) =>
+ new perftest.signup.SignupController($scope, $state, $stateParams, signupEntry)]);

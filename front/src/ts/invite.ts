@@ -47,10 +47,3 @@ module loadtest.invitation {
     }
   }
 }
-
-angular.module('perftest.invite', ['ngResource', 'ui.router', 'perftest.conf']);
-angular.module('perftest.invite').factory('invitationEntry', ['appConfig', '$resource', function (appConfig, $resource) {
-  return $resource( appConfig.apiPref + '/invite');
-}]);
-angular.module('perftest.invite').controller('invitationController',
-['$scope', '$state', 'invitationEntry', ($scope, $state, invitationEntry) => new loadtest.invitation.InvitationController($scope, $state, invitationEntry)]);

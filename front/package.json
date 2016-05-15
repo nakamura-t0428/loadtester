@@ -25,6 +25,11 @@
     "es6-promise": "~3.1.2",
     "del": "~2.2.0",
     "gulp-connect": "~3.2.0",
-    "run-sequence": "~1.1.5"
+    "run-sequence": "~1.1.5",
+    "gulp-webpack": "~1.5.0"
+  },
+  "dependencies": {
+    "ts-loader": "~0.8.2",
+    "typescript": "~1.8.10"
   }
 }

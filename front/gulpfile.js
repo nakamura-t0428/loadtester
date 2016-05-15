@@ -6,6 +6,7 @@ var tsd = require('gulp-tsd');
 var ts = require('gulp-typescript');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
+var webpack = require('gulp-webpack');
 var sourcemaps = require('gulp-sourcemaps');
 var htmlmin = require('gulp-htmlmin');
 var imagemin = require('gulp-imagemin');
@@ -16,6 +17,8 @@ var cssmin = require('gulp-cssmin');
 var del = require('del');
 var connect = require('gulp-connect');
 var runSequence = require('run-sequence');
+
+var webpackConfig = require('./webpack.config.js');
 
 gulp.task('tsd', function (callback) {
   tsd({
@@ -30,10 +33,11 @@ gulp.task('landing_ts', ['tsd'], function () {
   // TypeScriptのコンパイル
   var tsResult = gulp.src(['./src/commonts/*.ts','./src/ts/*.ts'])
   .pipe(sourcemaps.init())
+  .pipe(webpack(webpackConfig))
   // tscpnfig.jsonに書いたコンパイルオプションの取得
-  .pipe(ts(tsConfig.compilerOptions))
-  .pipe(concat('js/loadtest.js'))
-  .pipe(uglify())
+  // .pipe(ts(tsConfig.compilerOptions))
+  // .pipe(concat('js/loadtest.js'))
+  // .pipe(uglify())
   .pipe(sourcemaps.write('maps', {
     includeContent: true
   }))
@@ -44,24 +48,24 @@ gulp.task('landing_ts', ['tsd'], function () {
 });
 
 // TypeScript Task
-gulp.task('my_ts', ['tsd'], function () {
-  // TypeScriptのコンパイル
-  var tsResult = gulp.src(['./src/commonts/*.ts', './src/my/ts/*.ts'])
-  .pipe(sourcemaps.init())
-  // tscpnfig.jsonに書いたコンパイルオプションの取得
-  .pipe(ts(tsConfig.compilerOptions))
-  .pipe(concat('my/js/loadtest-my.js'))
-  .pipe(uglify())
-  .pipe(sourcemaps.write('maps', {
-    includeContent: true
-  }))
-  .pipe(gulp.dest('./dist'));
+// gulp.task('my_ts', ['tsd'], function () {
+//   // TypeScriptのコンパイル
+//   var tsResult = gulp.src(['./src/commonts/*.ts', './src/my/ts/*.ts'])
+//   .pipe(sourcemaps.init())
+//   // tscpnfig.jsonに書いたコンパイルオプションの取得
+//   .pipe(ts(tsConfig.compilerOptions))
+//   .pipe(concat('my/js/loadtest-my.js'))
+//   .pipe(uglify())
+//   .pipe(sourcemaps.write('maps', {
+//     includeContent: true
+//   }))
+//   .pipe(gulp.dest('./dist'));
+//
+//   // JSファイルをdistに移動
+//   return tsResult;
+// });
 
-  // JSファイルをdistに移動
-  return tsResult;
-});
-
-gulp.task('ts', ['landing_ts', 'my_ts']);
+gulp.task('ts', ['landing_ts']);
 
 gulp.task('html', function(){
   var result = gulp.src(['./src/**/*.html'])
@@ -114,7 +118,7 @@ gulp.task('connect', function(){
 // Watch
 gulp.task('watch', function () {
     gulp.watch(['./src/commonts/*.ts', './src/ts/*.ts'], ['landing_ts']);
-    gulp.watch(['./src/commonts/*.ts', './src/my/ts/*.ts'], ['my_ts']);
+    // gulp.watch(['./src/commonts/*.ts', './src/my/ts/*.ts'], ['my_ts']);
     gulp.watch(['./src/**/*.html'], ['html']);
     gulp.watch(['./src/**/*.{png,jpg,gif}', '!./src/commonjs/**/demo/**'], ['image']);
     gulp.watch(['./src/**/*.css', '!**/commonjs/**'], ['css']);

@@ -28,8 +28,7 @@ module loadtest.myinfo {
   }
 }
 
-angular.module('loadtest.myinfo',['perftest.conf']);
-angular.module('loadtest.myinfo').factory('myInfoData', ['appConfig', '$resource',
+angular.module('perftest.auth').factory('myInfoData', ['appConfig', '$resource',
 function(appConfig, $resource:ng.resource.IResourceService){
   var data = $resource( appConfig.apiPref + '/myinfo' );
   return data;

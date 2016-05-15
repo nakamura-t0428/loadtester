@@ -55,13 +55,3 @@ module perftest.signup {
     }
   }
 }
-
-angular.module('perftest.signup', ['ngResource', 'ui.router']);
-angular.module('perftest.signup').factory('signupEntry', ['appConfig', '$resource',
-function(appConfig, $resource:ng.resource.IResourceService){
-  return $resource( appConfig.apiPref + '/register' );
-}]);
-
-angular.module('perftest.signup').controller('signupController',
-['$scope', '$state', '$stateParams', 'signupEntry', ($scope, $state, $stateParams, signupEntry) =>
- new perftest.signup.SignupController($scope, $state, $stateParams, signupEntry)]);

@@ -39,7 +39,7 @@ module loadtest.signin {
           console.log('login success');
           // ctrl.$location.path('/my');
           // ctrl.$scope.$apply();
-          ctrl.$window.location.href = '/my';
+          ctrl.$state.go('my');
           // console.log(ctrl.$location.url());
         } else {
           console.log('login failed');
@@ -52,11 +52,3 @@ module loadtest.signin {
     }
   }
 }
-angular.module('perftest.signin', ['ngResource', 'ui.router']);
-angular.module('perftest.signin').factory('signinData', ['appConfig', '$resource',
-  function (appConfig, $resource) {
-      return $resource( appConfig.apiPref + '/authenticate');
-  }
-]);
-angular.module('perftest.signin').controller('signinController',
-['$scope', '$window', '$state', 'signinData', ($scope, $window, $state, signinData) => new loadtest.signin.SigninController($scope, $window, $state, signinData)]);
